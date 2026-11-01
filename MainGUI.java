@@ -304,6 +304,7 @@ public class MainGUI extends JFrame {
             }
             pesanan.tambahItem(daftarMenu[index], jumlah);
             muatTabelPesanan();
+            resetTotalBayar();
             JOptionPane.showMessageDialog(this,
                     "Pesanan ditambahkan: " + daftarMenu[index].getNama() + " x" + jumlah,
                     "Sukses", JOptionPane.INFORMATION_MESSAGE);
@@ -347,7 +348,7 @@ public class MainGUI extends JFrame {
         }
 
         ItemPesanan item = pesanan.getItem(row);
-        String namaMenu = item.getMenu().getNama();
+        String namaMenu = item.getNama();
         int jumlahLama = item.getJumlah();
 
         String jumlahStr;

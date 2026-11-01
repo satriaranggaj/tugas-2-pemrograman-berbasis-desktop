@@ -18,7 +18,7 @@ import java.util.Scanner;
  * Struktur yang dipakai:
  *   - Array      : daftar menu restoran & daftar pesanan pelanggan
  *   - if / else if / else : validasi input dan cek syarat diskon & promo
- *   - nested if  : syarat promo (total > 50.000 DAN ada minuman ≥ 1)
+ *   - nested if  : syarat promo (total > 50.000 DAN minuman ≥ 2)
  *   - switch case: navigasi menu utama dan menu pengelolaan
  *   - for        : menampilkan daftar menu & menjumlahkan subtotal
  *   - for-each   : mencetak seluruh item pada struk pesanan
@@ -408,7 +408,13 @@ public class Main {
                 continue;
             }
 
-            pilihan = Integer.parseInt(teks);
+            try {
+                pilihan = Integer.parseInt(teks);
+            } catch (NumberFormatException ex) {
+                System.out.println("Angka terlalu besar. Masukkan angka "
+                        + minimum + " - " + maksimum + ".");
+                continue;
+            }
 
             // IF ELSE : nilai di luar rentang pilihan
             if (pilihan < minimum || pilihan > maksimum) {
@@ -438,7 +444,12 @@ public class Main {
                 continue;
             }
 
-            nomor = Integer.parseInt(teks);
+            try {
+                nomor = Integer.parseInt(teks);
+            } catch (NumberFormatException ex) {
+                System.out.println("Angka terlalu besar. Masukkan angka 1 - " + jumlahMenu + ".");
+                continue;
+            }
 
             // IF ELSE : nomor di luar daftar menu
             if (nomor < 1 || nomor > jumlahMenu) {
@@ -467,7 +478,12 @@ public class Main {
                 continue;
             }
 
-            jumlah = Integer.parseInt(teks);
+            try {
+                jumlah = Integer.parseInt(teks);
+            } catch (NumberFormatException ex) {
+                System.out.println("Angka terlalu besar. Jumlah harus berupa angka.");
+                continue;
+            }
 
             // IF ELSE : jumlah harus lebih dari 0
             if (jumlah <= 0) {
@@ -496,7 +512,12 @@ public class Main {
                 continue;
             }
 
-            harga = Integer.parseInt(teks);
+            try {
+                harga = Integer.parseInt(teks);
+            } catch (NumberFormatException ex) {
+                System.out.println("Angka terlalu besar. Harga harus berupa angka.");
+                continue;
+            }
 
             // IF ELSE : harga harus lebih dari 0
             if (harga <= 0) {
