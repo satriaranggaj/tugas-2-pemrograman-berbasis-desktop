@@ -14,13 +14,15 @@
 public class ItemPesanan {
 
     // ================= ATRIBUT =================
-    private Menu menu;      // object menu yang dipesan
-    private int jumlah;     // jumlah pesanan untuk menu tersebut
+    private Menu menu;           // object menu yang dipesan
+    private int jumlah;          // jumlah pesanan untuk menu tersebut
+    private int hargaSaatDipesan;// snapshot harga saat item dipesan (agar tidak berubah jika harga menu diubah nanti)
 
     // ================= CONSTRUCTOR =================
     public ItemPesanan(Menu menu, int jumlah) {
         this.menu = menu;
         this.jumlah = jumlah;
+        this.hargaSaatDipesan = menu.getHarga(); // simpan harga snapshot
     }
 
     // ================= METHOD GETTER =================
@@ -39,16 +41,16 @@ public class ItemPesanan {
     }
 
     // ================= METHOD MENGHITUNG SUBTOTAL SATU ITEM =================
-    // subtotal item = harga satuan x jumlah pesanan
+    // subtotal item = harga snapshot saat dipesan x jumlah pesanan
     public int getSubtotal() {
-        return menu.getHarga() * jumlah;
+        return hargaSaatDipesan * jumlah;
     }
 
     // ================= METHOD MENGUBAH ITEM MENJADI TEKS STRUK =================
     public String getBarisStruk(int nomor) {
         return nomor + ". " + menu.getNama() + " (" + menu.getKategori() + ")"
                 + "\n     Jumlah          : " + jumlah
-                + "\n     Harga Satuan    : " + Menu.formatRupiah(menu.getHarga())
+                + "\n     Harga Satuan    : " + Menu.formatRupiah(hargaSaatDipesan)
                 + "\n     Subtotal Item   : " + Menu.formatRupiah(getSubtotal());
     }
 }

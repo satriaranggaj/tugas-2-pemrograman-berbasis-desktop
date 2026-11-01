@@ -18,7 +18,7 @@ import java.util.Scanner;
  * Struktur yang dipakai:
  *   - Array      : daftar menu restoran & daftar pesanan pelanggan
  *   - if / else if / else : validasi input dan cek syarat diskon & promo
- *   - nested if  : syarat promo (total > 50.000 DAN Es Teh minimal 2)
+ *   - nested if  : syarat promo (total > 50.000 DAN ada minuman ≥ 1)
  *   - switch case: navigasi menu utama dan menu pengelolaan
  *   - for        : menampilkan daftar menu & menjumlahkan subtotal
  *   - for-each   : mencetak seluruh item pada struk pesanan
@@ -206,7 +206,7 @@ public class Main {
 
             System.out.println("\n=== MENU PENGELOLAAN MENU RESTORAN ===");
             System.out.println("1. Tambah Menu Baru");
-            System.out.println("2. Ubah Harga Menu");
+            System.out.println("2. Ubah Menu (Nama, Harga, Kategori)");
             System.out.println("3. Hapus Menu");
             System.out.println("4. Kembali ke Menu Utama");
 

@@ -15,11 +15,11 @@
  * Struktur yang dipakai:
  *   - Array      : daftar menu restoran & daftar pesanan pelanggan
  *   - if / else if / else : validasi input dan cek syarat diskon & promo
- *   - nested if  : syarat promo (total > 50.000 DAN Es Teh minimal 2)
+ *   - nested if  : syarat promo (total > 50.000 DAN ada minuman ≥ 1)
  *   - switch case: navigasi logika internal
  *   - for        : menampilkan daftar menu & menjumlahkan subtotal
  *   - for-each   : mencetak seluruh item pada struk pesanan
- *   - while      : perulangan input pesanan sampai kata "selesai"
+ *   - while      : perulangan menu utama & menu pengelolaan
  *   - do-while   : meminta input kembali bila nilai di luar pilihan
  * ============================================================
  */
@@ -27,12 +27,11 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.AWTException;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import javax.imageio.ImageIO;
 
 public class MainGUI extends JFrame {
@@ -223,7 +222,7 @@ public class MainGUI extends JFrame {
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         JLabel lblInfo = new JLabel("<html><b>Manajemen Menu Restoran (Pemilik)</b><br>"
-                + "Pilih menu pada tabel, lalu klik tombol Ubah Harga atau Hapus Menu.<br>"
+                + "Pilih menu pada tabel, lalu klik tombol Ubah Menu atau Hapus Menu.<br>"
                 + "Semua perubahan memerlukan konfirmasi 'Ya'/'Tidak'.</html>");
         panel.add(lblInfo, BorderLayout.NORTH);
 
