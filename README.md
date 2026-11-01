@@ -4,8 +4,6 @@ Tugas Praktik 2, mata kuliah **STSI4201 Pemrograman Berbasis Desktop** — Unive
 Versi **console (terminal)** dari aplikasi kasir restoran yang pada Tugas Praktik 1 masih
 berupa console + GUI Swing.
 
-Dokumentasi lengkap: **[LAPORAN_TUGAS_2.md](LAPORAN_TUGAS_2.md)** (source code + penjelasan).
-
 ---
 
 ## Fitur
