@@ -8,15 +8,17 @@
  * Aturan perhitungan (sesuai soal Tugas 2):
  *   - subtotal    : jumlah seluruh subtotal item
  *   - diskon 10%  : jika subtotal > Rp100.000  (IF - ELSE)
- *   - promo BOGO  : jika subtotal > Rp50.000 DAN ada minuman ≥ 1
+ *   - promo BOGO  : jika subtotal > Rp50.000 DAN ada minuman ≥ 2
  *                   (NESTED IF, berlaku untuk kategori MINUMAN umum)
+ *                   Setiap 2 minuman menghasilkan 1 minuman gratis
+ *                   (harga minuman termurah yang digunakan)
  *   - pajak 10%   : 10% dari subtotal
  *   - biaya       : Rp20.000
  *   - total bayar : subtotal - diskon - promo + pajak + biaya
  *
  * Struktur kontrol:
  *   - IF - ELSE   : diskon 10%
- *   - NESTED IF   : promo beli 1 gratis 1 (luar: total > 50.000, dalam: minuman ≥ 1)
+ *   - NESTED IF   : promo beli 1 gratis 1 (luar: total > 50.000, dalam: minuman ≥ 2)
  *   - IF - ELSE   : tampilkan info diskon/promo pada struk
  *   - for-each    : mencetak item pada struk
  * ============================================================
@@ -32,6 +34,7 @@ public class Struk {
     private int subtotal = 0;
     private int diskon = 0;
     private int bonusPromo = 0;
+    private int jumlahBonusPromo = 0;
     private int pajak = 0;
     private int biayaPelayanan = BIAYA_PELAYANAN;
     private int totalBayar = 0;
@@ -49,7 +52,7 @@ public class Struk {
 
         // ---- 2. Diskon 10% (IF - ELSE) ----
         if (subtotal > BATAS_DISKON) {                  // <-- IF
-            diskon = subtotal * 10 / 100;
+            diskon = Math.multiplyExact(subtotal, 10) / 100;
             diskonAktif = true;
         } else {                                       // <-- ELSE
             diskon = 0;
@@ -58,24 +61,35 @@ public class Struk {
 
         // ---- 3. Promo beli 1 gratis 1 untuk kategori MINUMAN (NESTED IF) ----
         bonusPromo = 0;
+        jumlahBonusPromo = 0;
         promoAktif = false;
 
         if (subtotal > BATAS_PROMO) {                  // <-- IF LUAR : total > Rp50.000
-            if (pesanan.getTotalItemPromo() >= 1) {    // <-- IF DALAM : ada minuman ≥ 1
-                bonusPromo = pesanan.getHargaItemPromo(); // gratis 1 minuman (termurah)
-                promoAktif = true;
+            if (pesanan.getTotalItemPromo() >= 2) {    // <-- IF DALAM : minuman ≥ 2
+                jumlahBonusPromo = pesanan.getJumlahBonusPromo();
+                bonusPromo = pesanan.getTotalBonusPromo();
+                promoAktif = bonusPromo > 0;
             } else {
                 bonusPromo = 0;
+                jumlahBonusPromo = 0;
             }
         } else {
             bonusPromo = 0;
+            jumlahBonusPromo = 0;
         }
 
         // ---- 4. Pajak 10% dari subtotal ----
-        pajak = subtotal * 10 / 100;
+        pajak = Math.multiplyExact(subtotal, 10) / 100;
 
-        // ---- 5. Total bayar akhir ----
-        totalBayar = subtotal - diskon - bonusPromo + pajak + biayaPelayanan;
+        // ---- 5. Biaya pelayanan ----
+        biayaPelayanan = BIAYA_PELAYANAN;
+
+        // ---- 6. Total bayar akhir ----
+        totalBayar = subtotal
+                - diskon
+                - bonusPromo
+                + pajak
+                + biayaPelayanan;
     }
 
     // ============================================================
@@ -109,7 +123,7 @@ public class Struk {
         // IF : tampilkan informasi promo hanya bila aktif
         if (promoAktif) {
             System.out.println("Promo Beli 1 Gratis 1   : -" + Menu.formatRupiah(bonusPromo)
-                    + "   (minuman termurah)");
+                    + "   (" + jumlahBonusPromo + " minuman gratis)");
         } else {
             System.out.println("Promo Beli 1 Gratis 1   : tidak ada");
         }
@@ -140,14 +154,15 @@ public class Struk {
     public String getInfoPromo() {
         // IF : total memenuhi syarat promo
         if (subtotal > BATAS_PROMO) {
-            // IF : ada minuman setidaknya 1
+            // IF : ada minuman setidaknya 2
             if (promoAktif) {
                 return "[INFO] Total memenuhi syarat promo (>Rp50.000)."
-                        + "\n[INFO] Promo aktif! Beli 1 gratis 1 untuk kategori MINUMAN, bonus "
+                        + "\n[INFO] Promo aktif! Beli 1 gratis 1 untuk kategori MINUMAN, "
+                        + jumlahBonusPromo + " minuman gratis, bonus "
                         + Menu.formatRupiah(bonusPromo) + ".";
             } else {
                 return "[INFO] Total memenuhi syarat promo (>Rp50.000)."
-                        + "\n[INFO] Promo tidak aktif karena belum ada item minuman yang dipesan.";
+                        + "\n[INFO] Promo tidak aktif karena belum ada minimal 2 minuman.";
             }
         } else {
             return "[INFO] Promo tidak aktif karena total belum melebihi Rp50.000.";
@@ -181,7 +196,7 @@ public class Struk {
 
         if (promoAktif) {
             sb.append("Promo Beli 1 Gratis 1   : -").append(Menu.formatRupiah(bonusPromo))
-                    .append("   (kategori MINUMAN)\n");
+                    .append("   (").append(jumlahBonusPromo).append(" minuman gratis)\n");
         } else {
             sb.append("Promo Beli 1 Gratis 1   : tidak ada\n");
         }
@@ -209,6 +224,10 @@ public class Struk {
 
     public int getBonusPromo() {
         return bonusPromo;
+    }
+
+    public int getJumlahBonusPromo() {
+        return jumlahBonusPromo;
     }
 
     public int getPajak() {

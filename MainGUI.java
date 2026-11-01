@@ -330,6 +330,7 @@ public class MainGUI extends JFrame {
         if (konfirmasi == JOptionPane.YES_OPTION) {
             pesanan.hapusItem(row);
             muatTabelPesanan();
+            resetTotalBayar();
         }
     }
 
@@ -374,6 +375,7 @@ public class MainGUI extends JFrame {
 
         if (pesanan.ubahJumlahItem(row, jumlahBaru)) {
             muatTabelPesanan();
+            resetTotalBayar();
             JOptionPane.showMessageDialog(this,
                     "Jumlah '" + namaMenu + "' diubah menjadi " + jumlahBaru + ".",
                     "Sukses", JOptionPane.INFORMATION_MESSAGE);
@@ -384,17 +386,18 @@ public class MainGUI extends JFrame {
 
     // ============================================================
     //  METHOD : MEMUAT TABEL PESANAN
+    //  Menggunakan snapshot harga (ItemPesanan.getHargaSatuan) agar
+    //  harga yang ditampilkan tidak berubah meski menu diubah nanti.
     // ============================================================
     private void muatTabelPesanan() {
         modelPesanan.setRowCount(0);
         for (int i = 0; i < pesanan.getJumlahItem(); i++) {
             ItemPesanan item = pesanan.getItem(i);
-            Menu m = item.getMenu();
             Object[] row = {
-                    m.getNama(),
-                    m.getKategori(),
+                    item.getNama(),
+                    item.getKategori(),
                     item.getJumlah(),
-                    Menu.formatRupiah(m.getHarga()),
+                    Menu.formatRupiah(item.getHargaSatuan()),
                     Menu.formatRupiah(item.getSubtotal())
             };
             modelPesanan.addRow(row);
@@ -421,7 +424,16 @@ public class MainGUI extends JFrame {
     }
 
     // ============================================================
+    //  METHOD : RESET TOTAL BAYAR (saat pesanan berubah)
+    // ============================================================
+    private void resetTotalBayar() {
+        lblTotalBayar.setText("TOTAL BAYAR: Rp0");
+    }
+
+    // ============================================================
     //  METHOD : MENCETAK STRUK (GUI)
+    //  Selalu hitung ulang terlebih dahulu agar struk menggunakan
+    //  data perhitungan terbaru, bukan nilai lama yang kedaluwarsa.
     // ============================================================
     private void cetakStrukGUI() {
         if (pesanan.isKosong()) {
@@ -431,8 +443,13 @@ public class MainGUI extends JFrame {
             return;
         }
 
+        // Selalu hitung ulang sebelum membuat struk
+        struk.hitung(pesanan);
+
         String teksStruk = struk.generateStrukText(pesanan);
         areaStruk.setText(teksStruk);
+
+        lblTotalBayar.setText("TOTAL BAYAR: " + Menu.formatRupiah(struk.getTotalBayar()));
 
         JOptionPane.showMessageDialog(this,
                 "Struk pesanan telah dicetak pada area kanan.",

@@ -28,7 +28,7 @@ Versi **GUI (Java Swing)** dari aplikasi kasir restoran.
 |---|---|
 | Total biaya keseluruhan | jumlah subtotal seluruh item |
 | Diskon | 10% jika total > Rp100.000 |
-| Promo | total > Rp50.000 **DAN** ada minuman ≥ 1 → beli 1 gratis 1 minuman termurah |
+| Promo | total > Rp50.000 **DAN** minimal 2 minuman → beli 1 gratis 1 (setiap 2 minuman = 1 gratis, harga minuman termurah) |
 | Pajak | 10% dari total biaya keseluruhan |
 | Biaya pelayanan | Rp20.000 |
 | Rumus total bayar | `total − diskon − promo + pajak + biaya pelayanan` |
@@ -117,8 +117,7 @@ java MainGUI
   juga wajib dipakai dan telah diimplementasikan di `MainGUI.java` dan `Struk.java`.
 - Semua data menu dan data pesanan disimpan dalam **array** (bukan `ArrayList`),
   dengan mekanisme perbesar array otomatis saat kapasitas penuh.
-- Promo beli 1 gratis 1 berlaku untuk **kategori minuman secara umum**, bukan hanya
-  satu menu minuman tertentu.
+- Promo beli 1 gratis 1 berlaku untuk **kategori minuman secara umum** (minimal 2 minuman). Setiap 2 minuman yang dibeli menghasilkan 1 minuman gratis dengan harga minuman termurah.
 
 ---
 

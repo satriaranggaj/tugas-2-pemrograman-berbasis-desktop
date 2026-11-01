@@ -13,7 +13,7 @@
  *   - if            : validasi menu dan jumlah tidak boleh null / <= 0
  *   - if            : array harus diperbesar bila penuh
  *   - for           : getSubtotal, getSemuaItem, kosongkan
- *   - for-each      : getTotalItemPromo (kategori minuman), getHargaItemPromo
+ *   - for-each      : getTotalItemPromo, getHargaItemPromo
  *   - while         : hapusItem (pergeseran array ke kiri)
  *   - if-else if    : (digunakan dalam MainGUI untuk validasi input)
  * ============================================================
@@ -24,7 +24,7 @@ public class Pesanan {
     // Kategori minuman yang mendapat promo "beli 1 gratis 1"
     // Promo berlaku untuk KATEGORI minuman secara umum, bukan hanya satu item.
     public static final String KATEGORI_PROMO = "MINUMAN";
-    public static final int MINIMUM_ITEM_PROMO = 1;   // minimal 1 item minuman
+    public static final int MINIMUM_ITEM_PROMO = 2;   // minimal 2 item minuman untuk bonus
 
     // ================= ATRIBUT (ARRAY PESANAN) =================
     private ItemPesanan[] daftarItem = new ItemPesanan[10];   // array 1 dimensi
@@ -112,7 +112,7 @@ public class Pesanan {
     public int getSubtotal() {
         int total = 0;
         for (int i = 0; i < jumlahItem; i++) {
-            total = total + daftarItem[i].getSubtotal();
+            total = Math.addExact(total, daftarItem[i].getSubtotal());
         }
         return total;
     }
@@ -123,28 +123,42 @@ public class Pesanan {
         int total = 0;
         for (ItemPesanan item : getSemuaItem()) {     // perulangan for-each
             // IF : item tersebut termasuk kategori minuman (promo)
-            if (item.getMenu().getKategori().equalsIgnoreCase(KATEGORI_PROMO)) {
-                total = total + item.getJumlah();
+            if (item.getKategori().equalsIgnoreCase(KATEGORI_PROMO)) {
+                total = Math.addExact(total, item.getJumlah());
             }
         }
         return total;
     }
 
-    // ================= METHOD MENGAMBIL HARGA ITEM PROMO (MINUMAN TERMURAH) =================
+    // ================= METHOD MENGHITUNG JUMLAH BONUS PROMO =================
+    // Setiap 2 unit minuman menghasilkan 1 unit gratis (dibulatkan ke bawah).
+    public int getJumlahBonusPromo() {
+        return getTotalItemPromo() / 2;
+    }
+
+    // ================= METHOD MENGAMBIL HARGA MINUMAN TERMURAH =================
     // Perulangan for-each : mencari harga minuman termurah untuk dihitung sebagai bonus
     public int getHargaItemPromo() {
-        int hargaTermurah = 0;
-        boolean pertama = true;
+        int hargaTermurah = Integer.MAX_VALUE;
+
         for (ItemPesanan item : getSemuaItem()) {     // perulangan for-each
-            if (item.getMenu().getKategori().equalsIgnoreCase(KATEGORI_PROMO)) {
-                int harga = item.getMenu().getHarga();
-                if (pertama || harga < hargaTermurah) {
+            if (item.getKategori().equalsIgnoreCase(KATEGORI_PROMO)
+                    && item.getJumlah() > 0) {
+
+                int harga = item.getHargaSatuan();
+                if (harga < hargaTermurah) {
                     hargaTermurah = harga;
-                    pertama = false;
                 }
             }
         }
-        return hargaTermurah;
+
+        return hargaTermurah == Integer.MAX_VALUE ? 0 : hargaTermurah;
+    }
+
+    // ================= METHOD MENGHITUNG NILAI TOTAL BONUS PROMO =================
+    // Potongan promo = jumlah bonus × harga minuman termurah
+    public int getTotalBonusPromo() {
+        return Math.multiplyExact(getJumlahBonusPromo(), getHargaItemPromo());
     }
 
     // ================= METHOD MENGCEK APAKAH PESANAN KOSONG =================
